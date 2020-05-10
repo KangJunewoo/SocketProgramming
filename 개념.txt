@@ -1,0 +1,52 @@
+tcp 서버의 함수호출 순서
+  socket() : 소켓생성
+  bind() : 소켓 주소할당
+  listen() : 연결요청 대기상태
+  accept() : 연결허용
+  read() / write() : 데이터 송수신
+  close() : 연결종료
+
+tcp 클라이언트의 함수호출 순서
+  socket() : 소켓생성
+  connect() : 연결요청
+  read() / write() : 데이터 송수신
+  close() : 연결종료
+
+만약 iterative 서버라면
+  accept / rw / close 무한반복.
+
+예제
+  server on
+  client on, access server and send "hello server"
+  server receive, print "hello server", send "hello client"
+  client receive, print "hello client"
+
+진짜과제
+  server on
+  client on, access server and send "hello server"
+  server sends file to client by packet of 1460 bytes
+  client receives packets, storing in buffer, write file at last.
+  debug : compare contents, size of send file / receive file by cmp or diff.
+
+도전과제
+  multi threading
+  로딩바
+  약간의 gui?
+
+앞으로 공부할 내용
+  7. 연결종료를 깔끔하게.
+  8. ip 대신 도메인이름 사용
+  9. 소켓 옵션.. tcp 심화인듯.
+  =======
+  10. 프로세스
+  11. 프로세스간 통신
+  12. 멀티플렉싱
+  13. read&write 대신 send&recv 쓰기 : ㄱㄱ.
+  14. 멀티캐스트, 브로드캐스트
+  ======
+  15. 표준입출력 함수로 네트워크 프로그래밍 : 파일 포인터에 관한 내용이 나오긴 함..
+  16. 입출력 스트림
+  17. 멀티플렉싱 : select보단 epoll
+  18. 멀티쓰레드 기반 서버구현 : 여기에 멀티쓰레드 사용 나옴.
+  ======
+  24. HTTP 서버 제작하기
