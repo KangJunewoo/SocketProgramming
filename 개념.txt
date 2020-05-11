@@ -1,3 +1,7 @@
+교재에서 우선 공부할 함수
+  send&recv
+  fread&fwrite
+
 tcp 서버의 함수호출 순서
   socket() : 소켓생성
   bind() : 소켓 주소할당
