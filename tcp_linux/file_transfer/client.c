@@ -10,8 +10,11 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include "transfer_header.h"
 
 void error_handling(char* message);
+void writefile(int sockfd, FILE *fp);
 
 int main(int argc, char* argv[]){
   // fd 저장할 변수
@@ -56,6 +59,9 @@ int main(int argc, char* argv[]){
   */
   write(sock, message, sizeof(message));
   
+  // TODO : client receives packets, storing in buffer, write file at last.
+
+  // TODO : debug : compare contents, size of send file / receive file by cmp or diff.
   // 4단계 - 연결 종료.
   close(sock);
   return 0;
@@ -65,4 +71,21 @@ void error_handling(char* message){
   fputs(message,stderr);
   fputc('\n',stderr);
   exit(1);
+}
+
+void writefile(int sockfd, FILE *fp){
+  ssize_t n;
+  char buff[MAX_LINE]={0};
+
+  while((n=recv(sockfd,buff,MAX_LINE,0))>0){
+    total+=n;
+    if(n==-1){
+      error_handling("Receiving Error");
+    }
+    if(fwrite(buff, sizeof(char), n, fp)!=n){
+      error_handling("File-Writing Error");
+    }
+
+    memset(buff, 0, MAX_LINE);
+  }
 }

@@ -10,8 +10,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include "transfer_header.h"
 
 void error_handling(char *message);
+void sendfile(FILE *fp, int sockfd);
 
 int main(int argc, char* argv[]){
   int serv_sock;
@@ -89,7 +91,8 @@ int main(int argc, char* argv[]){
   if(str_len==-1)
     error_handling("read() error");
   printf("message from client:%s\n", message);
-  
+  // TODO : server sends file to client by packet of 1460 bytes
+
   /**
    * 6단계 - 연결 종료
    * 성공시 0, 실패시 -1 리턴.
@@ -104,4 +107,22 @@ void error_handling(char* message){
   fputs(message, stderr);
   fputc('\n', stderr);
   exit(1);
+}
+
+void sendfile(FILE *fp, int sockfd){
+  int n;
+  char sendline[MAX_LINE]={0};
+
+  while((n=fread(sendline, sizeof(char), MAX_LINE, fp))>0){
+    total+=n;
+
+    if(n!=MAX_LINE&&ferror(fp)){
+      error_handling("File-Read Error");
+    }
+
+    if(send(sockfd, sendline, n, 0)==-1)
+      error_handling("Cannot send file");
+
+    memset(sendline, 0, MAX_LINE);
+  }
 }
