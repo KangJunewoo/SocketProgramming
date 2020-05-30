@@ -25,7 +25,7 @@ tcp 클라이언트의 함수호출 순서
   server receive, print "hello server", send "hello client"
   client receive, print "hello client"
 
-진짜과제
+진짜과제 : 서버가 클라이언트한테 데이터를 보내야 함.
   server on
   client on, access server and send "hello server"
   server sends file to client by packet of 1460 bytes
