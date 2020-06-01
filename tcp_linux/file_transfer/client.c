@@ -98,7 +98,7 @@ void writefile(int sockfd, FILE *fp){
     if(n==-1){
       error_handling("Receiving Error");
     }
-    if(fwrite(buff, sizeof(char), n, fp)!=n){
+    if(fwrite(buff, sizeof(char), n, fp)==-1){
       error_handling("File-Writing Error");
     }
 
