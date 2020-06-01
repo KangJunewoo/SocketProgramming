@@ -10,10 +10,13 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include "transfer_header.h"
-
+#include <libgen.h>
+#include <netinet/in.h>
+#define MAX_LINE 1460
+#define BUFFSIZE 1460
 void error_handling(char *message);
 void sendfile(FILE *fp, int sockfd);
+ssize_t total=0;
 
 int main(int argc, char* argv[]){
   int serv_sock;
@@ -87,12 +90,32 @@ int main(int argc, char* argv[]){
    * write : client fd, msg to send, msg크기 (for server)
    * read : client fd, msgto be saved, msg크기 (for client)
   */
+  /*
   str_len=read(clnt_sock, message, sizeof(message)-1);
   if(str_len==-1)
     error_handling("read() error");
   printf("message from client:%s\n", message);
+  */
   // TODO : server sends file to client by packet of 1460 bytes
 
+  // FIXME : 지금은 임시로 test.mp4로 설정함. 이거 argv로 받아야해.
+  char* filename = "test.mp4";
+  if(filename==NULL)
+    error_handling("cannot get filename");
+
+  char buff[BUFFSIZE]={0};
+  strncpy(buff, filename, strlen(filename));
+  if(send(clnt_sock, buff, BUFFSIZE, 0)==-1)
+    error_handling("cannot send filename");
+
+  // FIXME : 여기도 마찬가지.
+  FILE *fp = fopen("test.mp4", "rb");
+  if(fp==NULL)
+    error_handling("Cannot Open File");
+
+  sendfile(fp, clnt_sock);
+  printf("Send Success, %ld bytes send\n", total);
+  fclose(fp);
   /**
    * 6단계 - 연결 종료
    * 성공시 0, 실패시 -1 리턴.

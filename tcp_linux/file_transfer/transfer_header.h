@@ -11,8 +11,6 @@
 
 // 1460바이트씩 전달.
 #define MAX_LINE 1460
-#define LINSTENPORT 7788
-#define SERVERPORT 8877
-#define BUFFSIZE 4096
+#define BUFFSIZE 1460
 
 #endif //TRANSFER_FILE_TRANSFER_H

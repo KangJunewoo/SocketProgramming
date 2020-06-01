@@ -11,10 +11,12 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "transfer_header.h"
-
+#include <libgen.h>
+#define MAX_LINE 1460
+#define BUFFSIZE 1460
 void error_handling(char* message);
 void writefile(int sockfd, FILE *fp);
+ssize_t total=0;
 
 int main(int argc, char* argv[]){
   // fd 저장할 변수
@@ -57,9 +59,23 @@ int main(int argc, char* argv[]){
    * write : client fd, msg to send, msg크기 (for server)
    * read : client fd, msg to be saved, msg크기 (for client)
   */
-  write(sock, message, sizeof(message));
+  //write(sock, message, sizeof(message));
   
   // TODO : client receives packets, storing in buffer, write file at last.
+  char filename[BUFFSIZE]="test.mp4";
+  /*
+  if(recv(sock, filename, BUFFSIZE, 0)==-1)
+    error_handling("Cannot receive Filename");
+  */
+  
+  FILE *fp = fopen(filename, "wb");
+  if(fp==NULL)
+    error_handling("Cannot open file");
+  writefile(sock, fp);
+  printf("Receive Success, %ld bytes received.\n", total);
+
+  fclose(fp);
+
 
   // TODO : debug : compare contents, size of send file / receive file by cmp or diff.
   // 4단계 - 연결 종료.
